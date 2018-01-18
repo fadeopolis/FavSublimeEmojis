@@ -1,0 +1,7 @@
+{
+  "dependencies": [],
+  "version":      "0.0.1",
+  "platforms":    ["*"],
+  "sublime_text": ">=3000",
+  "description":  "A simple Sublime Text 3 plugin to insert emoji from the command palette"
+}
