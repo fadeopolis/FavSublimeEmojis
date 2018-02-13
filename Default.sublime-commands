@@ -1,5 +1,6 @@
 
 [
   { "caption": "Insert Emoji",  "command": "fav_insert_emoji"  },
+  { "caption": "Insert Jamo", "command": "fav_insert_jamo" },
   { "caption": "Insert Hangul", "command": "fav_insert_hangul" },
 ]

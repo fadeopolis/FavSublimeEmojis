@@ -33,7 +33,7 @@ class FavInsertEmojiCommand(sublime_plugin.TextCommand):
     window.show_quick_panel(items, callback)
 
 
-class FavInsertHangulCommand(sublime_plugin.TextCommand):
+class FavInsertJamoCommand(sublime_plugin.TextCommand):
   def run(self, edit):
     window = self.view.window()
 
@@ -46,6 +46,25 @@ class FavInsertHangulCommand(sublime_plugin.TextCommand):
         jamo.unicode,
         '(' + ', '.join(jamo.romanizations) + ')'
       ]))
+
+    def callback(selection):
+      if selection >= 0:
+        try:
+          c = txt[selection]
+        except IndexError:
+          c = '<hangul-error: invalid selection>'
+
+        self.view.run_command("insert", {"characters": c})
+
+    window.show_quick_panel(gui, callback)
+
+
+class FavInsertHangulCommand(sublime_plugin.TextCommand):
+  def run(self, edit):
+    window = self.view.window()
+
+    txt = []
+    gui = []
 
     for sy in hangul_db.syllable_db():
       txt.append(sy.unicode)
