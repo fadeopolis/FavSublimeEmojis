@@ -8,6 +8,6 @@ To bootstrap the plugin to make it usable run the below commands.
 ## rebuild emoji DB
 
 ```bash
-wget https://unicode.org/emoji/charts/emoji-list.html
-python3 lib/build-emoji-db.py "Emoji List, v5.0.html" > emoji.db
+wget -O emoji-list.html https://unicode.org/emoji/charts/emoji-list.html
+python3 lib/build-emoji-db.py emoji-list.html > emoji.db
 ```

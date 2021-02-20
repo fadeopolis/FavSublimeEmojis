@@ -15,12 +15,12 @@ __all__ = [
 Emoji = collections.namedtuple(
   'Emoji',
   [
-    'id',              # : int, numeric ID of emoji
-    'emoji',           # : str, unicode as str
-    'name',            # : str, name and description
-    # 'major_category',  # : str, descriptive category
-    # 'minor_category',  # : str, descriptive category
-    # 'tags',            # : [str], descriptive tags
+    'id',              # type: int, numeric ID of emoji
+    'emoji',           # type: str, unicode as str
+    'name',            # type: str, name and description
+    'major_category',  # type: str, descriptive category
+    'minor_category',  # type: str, descriptive category
+    'tags',            # type: Tuple[str, ...], descriptive tags
   ],
 )
 

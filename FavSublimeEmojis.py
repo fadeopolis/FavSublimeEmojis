@@ -6,22 +6,47 @@ import sublime_plugin
 from .lib import emoji_db
 from .lib import hangul_db
 
+# from typing import List, Optional
+
+## list of all emojis
+emojis           = None # type: Optional[List[emoji_db.Emoji]]
+## list of items shown in drop-down list user selects from
+emoji_list_items = None # type: Optional[List[str]]
 
 class FavInsertEmojiCommand(sublime_plugin.TextCommand):
   def run(self, edit):
+    global emojis, emoji_list_items
+
     window = self.view.window()
 
-    emojis = sublime.load_resource("/".join(("Packages", __package__, "emoji.db")))
+    if emojis is None:
+      assert emoji_list_items is None
 
-    try:
-      emojis = emoji_db.parse_db(emojis)
-    except ValueError as e:
-      self.view.show_popup('<b>error: Emoji DB file corrupted (' + repr(e) + '<b/>')
-      return
+      try:
+        emoji_db_text = sublime.load_resource("/".join(("Packages", __package__, "emoji.db")))
+      except OSError as e:
+        self.view.show_popup('<b>error: Emoji DB file not found (' + repr(e) + '<b/>')
+        return
 
-    items = [e.name + ' (' + e.emoji + ')' for e in emojis]
+      try:
+        emojis = emoji_db.parse_db(emoji_db_text)
+      except ValueError as e:
+        self.view.show_popup('<b>error: Emoji DB file corrupted (' + repr(e) + '<b/>')
+        return
+
+      emoji_list_items = []
+
+      for e in emojis:
+        tags = [e.major_category, e.minor_category]
+        tags.extend(e.tags)
+
+        item = [e.name + ' (' + e.emoji + ')', ' | '.join(tags)]
+
+        emoji_list_items.append(item)
 
     def callback(selection):
+      ## called with selection == -1 if user cancels dialog
+
       if selection >= 0:
         try:
           txt = emojis[selection].emoji
@@ -30,7 +55,7 @@ class FavInsertEmojiCommand(sublime_plugin.TextCommand):
 
         self.view.run_command("insert", {"characters": txt})
 
-    window.show_quick_panel(items, callback)
+    window.show_quick_panel(emoji_list_items, callback)
 
 
 class FavInsertJamoCommand(sublime_plugin.TextCommand):
@@ -80,3 +105,6 @@ class FavInsertHangulCommand(sublime_plugin.TextCommand):
         self.view.run_command("insert", {"characters": c})
 
     window.show_quick_panel(gui, callback)
+
+
+

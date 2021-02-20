@@ -19,12 +19,8 @@ def main(args):
 
   soup = bs4.BeautifulSoup(emoji_file, "lxml")
 
-  tables = soup.find_all('table')
-
-  assert len(tables) == 2
-
-  emoji_table = tables[0]
-  # the second table just contains some statistics
+  emoji_table = soup.find('table')
+  assert emoji_table
 
   ## drop unused <img> tags
   for img in soup.find_all('img'):
@@ -66,7 +62,7 @@ def main(args):
   print(db)
 
 
-def get_major_category(tr: bs4.Tag):
+def get_major_category(tr: bs4.Tag) -> str:
   """
     Checks if a <tr> tag is a major category line
 
@@ -83,12 +79,13 @@ def get_major_category(tr: bs4.Tag):
     If the structures matches extract text of <tr>, otherwise return None
   """
   if tr.th and tr.th.get('class') == ['bighead']:
+    assert tr.text
     return tr.text
 
   return
 
 
-def get_minor_category(tr):
+def get_minor_category(tr: bs4.Tag) -> str:
   """
     Checks if a <tr> tag is a minor category line
 
@@ -105,12 +102,13 @@ def get_minor_category(tr):
     If the structures matches extract text of <tr>, otherwise return None
   """
   if tr.th and tr.th.get('class') == ['mediumhead']:
+    assert tr.text
     return tr.text
 
   return
 
 
-def is_legend(tr):
+def is_legend(tr: bs4.Tag) -> bool:
   """
     Checks if a <tr> tag is a legend line.
 
@@ -210,12 +208,12 @@ def get_emoji(tr, major_category: str, minor_category: str) -> ty.Optional[emoji
   categories = [c.strip() for c in categories.text.split('|')]
 
   return emoji_db.Emoji(
-    id    = number,
-    emoji = code,
-    name  = name,
-    # major_category = major_category,
-    # minor_category = minor_category,
-    # tags = categories
+    id             = number,
+    emoji          = code,
+    name           = name,
+    major_category = major_category,
+    minor_category = minor_category,
+    tags           = categories
   )
 
 
